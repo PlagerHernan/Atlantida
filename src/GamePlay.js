@@ -9,6 +9,7 @@ GamePlayManager = {
         game.scale.pageAlignVertically = true;
         
         this.gameOver = false;
+        this.flagMouse = false;
     },
     
     preload: function() {
@@ -33,7 +34,7 @@ GamePlayManager = {
     	this.music = game.add.audio('music', 0.3, true, true);    	
     	this.music.play();
     	this.sfxPop = game.add.audio('pop', 1, false, true);
-    	this.sfxDie = game.add.audio('die', 0.2, false, true);
+    	this.sfxDie = game.add.audio('die', 0.15, false, true);
     	this.sfxWin = game.add.audio('win', 0.3, false, true);
     	
         game.add.sprite(0, 0, 'background');
@@ -103,14 +104,32 @@ GamePlayManager = {
 			fill : "#ffffff",
 			align: "center"
 		}
+        var styleTitle =
+        {
+			font : "bold 70px Arial",
+			fill : "#ffffff",
+			align: "center"
+		}
+        
+        this.titleText = game.add.text(game.width/2, 80, 'ATLANTIDA', styleTitle);
+        this.titleText.anchor.setTo(0.5);
+        
+        this.infoText = game.add.text(game.width/2, 140, 'Click para jugar', styleText);
+        this.infoText.anchor.setTo(0.5);
+        game.add.tween(this.infoText.scale).to({
+        	x: [1, 0.7, 1],
+            y: [1, 0.7, 1]
+			}, 2000, Phaser.Easing.Exponential.Out, true, 0, 100, false);
         
         this.score = 0;
         this.scoreText = game.add.text(200, 40, 'Puntaje: ' + this.score, styleText);
         this.scoreText.anchor.setTo(0.5);
+        this.scoreText.visible = false;
         
         this.time = 5;
         this.timeText = game.add.text(950, 40, 'Tiempo: ' + this.time, styleText);
         this.timeText.anchor.setTo(0.5);
+        this.timeText.visible = false;
         this.timerGameOver = game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
         
     },
@@ -166,6 +185,13 @@ GamePlayManager = {
 		game.time.events.remove(this.timerGameOver);
 		//bloqueo movimiento
 		this.gameOver = true;
+		//reinicio juego a los 5 segundos
+		setTimeout(this.ResetGame, 5000);
+	},
+	
+	ResetGame : function()
+	{
+		game.state.start("gameplay");
 	},
     
     /*render: function()
@@ -222,6 +248,11 @@ GamePlayManager = {
     flagOn: function() 
     {
 		this.flagMouse = true;
+		
+		this.titleText.visible = false;
+		this.infoText.visible = false;
+		this.scoreText.visible = true;
+		this.timeText.visible = true;
 	},
     
     update: function() 
