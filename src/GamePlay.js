@@ -1,4 +1,4 @@
-var amountDiamonds = 3;
+var amountDiamonds = 30;
 var amountBoobles = 30;
 
 GamePlayManager = {
@@ -85,6 +85,7 @@ GamePlayManager = {
 			diamond.scale.setTo(0.3 + game.rnd.frac()); //tamaño random entre 0.3 y 1.3
 			diamond.x = game.rnd.integerInRange(50, 1050); //posición random en la pantalla (sin llegar a los márgenes)
 			diamond.y = game.rnd.integerInRange(50, 600);
+			diamond.visible = false;
 			
 			this.diamonds[int] = diamond;
 			var rectDiamond = this.getCollider(diamond); //obtengo collider del diamante
@@ -126,7 +127,7 @@ GamePlayManager = {
         this.scoreText.anchor.setTo(0.5);
         this.scoreText.visible = false;
         
-        this.time = 5;
+        this.time = 15;
         this.timeText = game.add.text(950, 40, 'Tiempo: ' + this.time, styleText);
         this.timeText.anchor.setTo(0.5);
         this.timeText.visible = false;
@@ -247,12 +248,20 @@ GamePlayManager = {
     
     flagOn: function() 
     {
-		this.flagMouse = true;
+    	if (!this.flagMouse)  //si es la 1ra vez que entra
+    	{
+    		this.titleText.visible = false;
+    		this.infoText.visible = false;
+    		
+    		this.scoreText.visible = true;
+    		this.timeText.visible = true;
+    		for (var int = 0; int < amountDiamonds; int++)
+    		{
+    			this.diamonds[int].visible = true;
+    		}
+		}
 		
-		this.titleText.visible = false;
-		this.infoText.visible = false;
-		this.scoreText.visible = true;
-		this.timeText.visible = true;
+		this.flagMouse = true;
 	},
     
     update: function() 
